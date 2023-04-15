@@ -1,0 +1,14 @@
+{{ $attributes := "" }}
+
+{{ range $key, $value := . }}
+  {{ if (and $key $value) }}
+
+    {{ if reflect.IsSlice $value }}
+      {{ $value = delimit $value " "}}
+    {{ end }}
+
+    {{ $attributes = printf "%s %s=\"%s\"" $attributes $key (string $value) }}
+  {{ end }}
+{{ end }}
+
+{{ return safeHTMLAttr $attributes }}

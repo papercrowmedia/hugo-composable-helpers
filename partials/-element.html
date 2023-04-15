@@ -1,0 +1,22 @@
+{{ $self_closing_tags := slice "area" "br" "col" "hr" "img" "input" "link" "meta" "source" "track" }}
+
+{{ with partial "-context" . }}
+  {{ $content := .Content }}
+  
+  {{ with partial "-split" (slice .Params (slice "tag"))}}
+    {{ $element := index . 1 }}
+    {{ $tag := $element.tag | default "div" }}
+
+    {{ with partial "-html-attrs" (index . 0) }}
+      {{ if reflect.IsSlice $content }}
+        {{ $content = delimit $content " " }}
+      {{ end }}
+
+      {{ if in $self_closing_tags $tag }}
+        {{ safeHTML (printf "<%s %s />" $tag .) }}
+      {{ else }}
+        {{ safeHTML (printf "<%s %s>%s</%s>" $tag . $content $tag) }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}

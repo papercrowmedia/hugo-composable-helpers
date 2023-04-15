@@ -1,0 +1,27 @@
+{{ $props := index . 0 }}
+
+{{ $slices := dict }}
+{{ $used_keys := slice }}
+{{ range $index, $arg := after 1 . }}
+  {{ $key := printf "_%s" (string $index) }}
+  {{ $set := index $slices $key | default dict }}
+  {{ $value := index $props $arg }}
+
+  {{ $set = merge $set (dict $arg $value)}}
+  {{ $slices = merge $slices (dict $key $set )}}
+  {{ $used_keys = append $arg $used_keys }}
+{{ end }}
+
+{{ $last_result := dict }}
+{{ range $key, $value := $props }}
+  {{ if not (in $used_keys $key) }}
+    {{ $last_result = merge $last_result (dict $key $value )}}
+  {{ end }}
+{{ end }}
+
+{{ $result := slice }}
+{{ range $index, $value := $slices }}
+  {{ $result = append $value $result }}
+{{ end }}
+
+{{ return append $result (slice $last_result) }}

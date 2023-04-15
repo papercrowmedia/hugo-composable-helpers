@@ -1,0 +1,42 @@
+{{ $content := "" }}
+{{ $params := dict }}
+{{ $content_types := slice
+  "[]string"
+  "[]template.HTML"
+  "string"
+  "template.HTML"
+}}
+
+{{/*  (slice [.Content: string | template.HTML | dict] [.Params?: dict])  */}}
+{{ if reflect.IsSlice . }}
+
+  {{ with index . 1 }}
+    {{ $params = . }}
+  {{ end }}
+
+  {{ with index . 0 }}
+    {{ if reflect.IsMap . }}
+      {{ $params = . }}
+    {{ else if (in $content_types (printf "%T" .)) }}
+      {{ $content = . }}
+    {{ end }}
+  {{ end }}
+
+{{/*  [.Params: dict]  */}}
+{{ else if reflect.IsMap . }}
+
+  {{ $params = . }}
+
+{{/*  [.Content: string | template.HTML]  */}}
+{{ else if (in $content_types (printf "%T" .)) }}
+
+  {{ $content = . }}
+
+{{ end }}
+
+{{ $context := dict
+    "Content" $content
+    "Params" $params
+}}
+
+{{ return $context }}

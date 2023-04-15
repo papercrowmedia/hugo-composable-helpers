@@ -1,0 +1,7 @@
+{{ with partial "-context" . }}
+  {{ $partial := .Content }}
+
+  {{ with partial "-context" .Params }}
+    {{ partial $partial . }}
+  {{ end }}
+{{ end }}
