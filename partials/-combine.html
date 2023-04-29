@@ -1,0 +1,20 @@
+{{ $result := dict }}
+{{ $separator := " " }}
+{{ $items := . }}
+{{ $itemCount := len $items }}
+
+{{ if not (reflect.IsMap (index $items $itemCount)) }}
+  {{ $separator = index $items $itemCount }}
+  {{ $items = first (sub $itemCount 1) $items }}
+{{ end }}
+
+
+{{ range $items }}
+  {{ range $key, $value := . }}
+    {{ $current := $key | index $result | default "" }}
+    {{ $value = printf "%s %s" $value $current }}
+    {{ $result = merge $result (dict $key (trim $value " ")) }}
+  {{ end }}
+{{ end }}
+
+{{ return $result }}

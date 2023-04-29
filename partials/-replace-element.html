@@ -1,0 +1,11 @@
+{{ with partial "-context" . }}
+  {{ $attrs := partial "-extract-attrs" .Content }}
+  {{ $attrs = partial "-combine" (slice .Params $attrs " ") }}
+  {{ $html := .Content }}
+
+  {{ with partial "-html-attrs" $attrs }}
+    {{ $html = replaceRE `^<(\w+).*?>` (printf "<$1 %s>" .) $html }}
+  {{ end }}
+    
+  {{ $html | safeHTML }}
+{{ end }}

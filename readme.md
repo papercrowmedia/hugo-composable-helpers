@@ -12,7 +12,7 @@ Requirements:
 If you havent already, [init](https://gohugo.io/hugo-modules/use-modules/#initialize-a-new-module) your project as Hugo Module:
 
 ```shell
-hugo mod init
+hugo mod init site.local
 ```
 
 Then you will need to add this module to your project's module imports:
@@ -143,4 +143,71 @@ Compose dynamic html attributes as a `dict` instead of complex and messy `if` lo
 {{ with partial "-html-attrs" (dict "class" (slice "sm:px-8" $class)) }}
   <div {{ . }}></div>
 {{ end }}
+```
+
+
+```html
+<div class="sm:px-8 bg-red-200"></div>
+```
+
+
+### `-combine`
+
+Combines the values of a slice of maps with the `separator`
+
+
+```go
+{{ $separator := " " }}
+{{ $a := dict "class" "text-white" "style" "position: absolute;" }}
+{{ $b := dict "class" "bg-black" "style" "font-size: 1rem;" }}
+
+{{ partial "-combine" (slice $a $b $separator) }} 
+```
+
+```
+map[class:bg-black text-white style:font-size: 1rem; position: absolute;] 
+```
+
+### `-svg`
+
+Loads the svg content from a file in the assets folder and embeds the svg into your page. A `dict` passed as the second slice item will be treated as html attributes and merged into the svg element.
+
+
+```html
+<!-- assets/logo.svg -->
+<svg class="hidden" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"></svg>
+```
+
+```go
+{{ partial "-svg" (slice "logo.svg" (dict
+  "class" "md:block md:h-32"
+))}}
+```
+
+```html
+<svg class="hidden md:block md:h-32" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"></svg>
+```
+
+### `-replace-element`
+
+```go
+{{ partial "-replace-element" (slice "<div></div>" (dict
+  "class" "hidden md:block md:h-32"
+))}}
+```
+
+```html
+<div class="hidden md:block md:h-32"></div>
+```
+
+### `-extract-attrs`
+
+Extracts the html attributes of an html element and returns a dict.
+
+```go
+{{ partial "-extract-attrs" "<div class=\"bg-black text-white\" style=\"font-size: 1rem; position: absolute;\"></div>" }} 
+```
+
+```
+map[class:bg-black text-white style:font-size: 1rem; position: absolute;] 
 ```

@@ -1,0 +1,7 @@
+{{ with partial "-context" . }}
+  {{ $params := .Params }}  
+
+  {{ with resources.Get .Content }}
+    {{ partial "-replace-element" (slice .Content $params) }}
+  {{ end }}
+{{ end }}

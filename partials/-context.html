@@ -35,8 +35,13 @@
 {{ end }}
 
 {{ $context := dict
+    "__context" true
     "Content" $content
     "Params" $params
 }}
+
+{{ if $params.__context }}
+  {{ $context = $params }}
+{{ end }}
 
 {{ return $context }}
