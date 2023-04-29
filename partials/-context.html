@@ -40,7 +40,7 @@
     "Params" $params
 }}
 
-{{ if $params.__context }}
+{{ if (and (reflect.IsMap $params) $params.__context) }}
   {{ $context = $params }}
 {{ end }}
 
