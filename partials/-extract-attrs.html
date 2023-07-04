@@ -1,7 +1,7 @@
 {{ $attrs := dict }}
 {{ $rootElement := findRE `<\w+\s(.*?)>` . 1 }}
 
-{{ range findRESubmatch `(\w+)=[\"\'](.+?)[\"\']` (index $rootElement 0) }}
+{{ range findRESubmatch `([\w-]+)=[\"\'](.+?)[\"\']` (index $rootElement 0) }}
   {{ $key := index . 1 }}
   {{ $value := index . 2 }}
 
