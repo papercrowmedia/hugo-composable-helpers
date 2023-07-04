@@ -1,0 +1,11 @@
+{{ $key := .key | default (getenv "HUGO_OPENGRAPH_KEY") }}
+{{ $secret := .secret | default (getenv "HUGO_OPENGRAPH_SECRET") }}
+{{ $path := printf "%s%s" $key .path }}
+{{ $signature := md5 (printf "%s%s" $secret $path)}}
+{{ $image_url := printf "%s?s=%s" $path $signature }}
+
+{{ if (strings.Contains $path "?") }}
+  {{ $image_url = printf "%s&s=%s" $path $signature }}
+{{ end }}
+
+{{ return printf "https://cdn.opengraphimage.com/%s" $image_url }}
